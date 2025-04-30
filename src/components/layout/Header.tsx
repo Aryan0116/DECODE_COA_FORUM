@@ -24,6 +24,7 @@ export function Header() {
     toast({
       title: "Signed out successfully",
     });
+    setIsMenuOpen(false); // Close menu on logout
   };
 
   return (
@@ -42,6 +43,7 @@ export function Header() {
           </Link>
         </div>
 
+        {/* Mobile Menu Toggle */}
         <div className="md:hidden flex items-center gap-2">
           <Button
             variant="ghost"
@@ -67,12 +69,13 @@ export function Header() {
               />
             </svg>
           </Button>
+
           {isMenuOpen && (
-            <div className="absolute top-16 left-0 right-0 bg-background border-b p-4 flex flex-col gap-2">
-              <Link to="/" className="text-sm font-medium hover:text-primary py-2 transition-colors duration-200">
+            <div className="absolute top-16 left-0 right-0 bg-background border-b p-4 flex flex-col gap-2 z-50">
+              <Link to="/" onClick={() => setIsMenuOpen(false)} className="text-sm font-medium hover:text-primary py-2 transition-colors duration-200">
                 Home
               </Link>
-              <Link to="/forum" className="text-sm font-medium hover:text-primary py-2 transition-colors duration-200">
+              <Link to="/forum" onClick={() => setIsMenuOpen(false)} className="text-sm font-medium hover:text-primary py-2 transition-colors duration-200">
                 Forum
               </Link>
               <ThemeToggle className="py-2" />
@@ -84,10 +87,10 @@ export function Header() {
                     <p className="text-xs text-muted-foreground capitalize">{user.role}</p>
                   </div>
                   <DropdownMenuSeparator />
-                  <Link to="/profile" className="text-sm font-medium hover:text-primary py-2 transition-colors duration-200">
+                  <Link to="/profile" onClick={() => setIsMenuOpen(false)} className="text-sm font-medium hover:text-primary py-2 transition-colors duration-200">
                     Profile
                   </Link>
-                  <Link to="/forum/my-posts" className="text-sm font-medium hover:text-primary py-2 transition-colors duration-200">
+                  <Link to="/forum/my-posts" onClick={() => setIsMenuOpen(false)} className="text-sm font-medium hover:text-primary py-2 transition-colors duration-200">
                     My Posts
                   </Link>
                   <DropdownMenuSeparator />
@@ -97,10 +100,10 @@ export function Header() {
                 </>
               ) : (
                 <div className="flex flex-col gap-2 py-2">
-                  <Link to="/login">
+                  <Link to="/login" onClick={() => setIsMenuOpen(false)}>
                     <Button variant="outline" className="w-full transition-colors duration-200">Log in</Button>
                   </Link>
-                  <Link to="/register">
+                  <Link to="/register" onClick={() => setIsMenuOpen(false)}>
                     <Button className="w-full transition-colors duration-200">Sign up</Button>
                   </Link>
                 </div>
@@ -110,10 +113,11 @@ export function Header() {
                 to="https://aryan0116.github.io/DECODE-CO-A/"
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => setIsMenuOpen(false)}
                 className="py-2 transition-colors duration-200 text-sm font-medium hover:text-primary flex items-center gap-2"
               >
                 <RocketIcon className="h-4 w-4 animate-pulse" />
-                <span>Explore More</span>
+                <span>DECODE CO-A</span>
               </Link>
             </div>
           )}

@@ -43,21 +43,21 @@ export default function Forum() {
   const loadPosts = async () => {
     setIsLoading(true);
     try {
-      console.log('Loading posts for category:', activeCategory);
+      // console.log('Loading posts for category:', activeCategory);
       const { posts: fetchedPosts, error } = await getPosts(activeCategory === 'all' ? undefined : activeCategory);
       
       if (error) {
-        console.error('Error loading posts:', error);
+        // console.error('Error loading posts:', error);
         toast('Failed to load posts', {
           description: error.message,
           position: 'bottom-right',
         });
       } else if (fetchedPosts) {
-        console.log('Posts loaded successfully:', fetchedPosts);
+        // console.log('Posts loaded successfully:', fetchedPosts);
         setPosts(fetchedPosts);
       }
     } catch (error) {
-      console.error('Error in loadPosts:', error);
+      // console.error('Error in loadPosts:', error);
       toast('Failed to load posts', {
         description: 'There was an error loading posts. Please try again.',
         position: 'bottom-right',
@@ -72,7 +72,7 @@ export default function Forum() {
   };
   
   const handleCreateSuccess = () => {
-    console.log('Post created successfully, reloading posts');
+    // console.log('Post created successfully, reloading posts');
     setCreateDialogOpen(false);
     toast('Post created successfully', {
       description: 'Your post has been published to the forum.',

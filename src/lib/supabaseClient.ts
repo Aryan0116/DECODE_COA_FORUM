@@ -1,4 +1,3 @@
-
 import { createClient } from '@supabase/supabase-js';
 import { User, Post, Comment, Like } from '@/types/forum';
 
@@ -46,8 +45,8 @@ export const signOut = async () => {
 
 // Posts
 export const getPosts = async (category?: string) => {
-  console.log('Getting posts with category:', category);
-  
+  // console.log('Getting posts with category:', category); // Logs the category being used to fetch posts.
+
   let query = supabase
     .from('posts')
     .select(`
@@ -66,8 +65,8 @@ export const getPosts = async (category?: string) => {
   }
 
   const { data, error } = await query;
-  console.log('Posts query result:', { data, error });
-  
+  // console.log('Posts query result:', { data, error });  // Logs the result of the posts query (data and any error).
+
   // Transform the data to match the Post type
   const posts = data?.map(item => ({
     ...item,
@@ -78,7 +77,7 @@ export const getPosts = async (category?: string) => {
       avatar_url: item.user.avatar_url
     } : undefined
   })) as Post[];
-  
+
   return { posts, error };
 };
 
@@ -88,7 +87,7 @@ export const getPost = async (id: string) => {
     .select('*, user:users(id, name, user_type, avatar_url)')
     .eq('id', id)
     .single();
-    
+
   // Transform to match Post type
   let post = null;
   if (data) {
@@ -102,13 +101,13 @@ export const getPost = async (id: string) => {
       } : undefined
     } as Post;
   }
-  
+
   return { post, error };
 };
 
 export const createPost = async (post: Omit<Post, 'id' | 'created_at' | 'updated_at' | 'likes_count' | 'comments_count'>) => {
-  console.log('Creating post with data:', post);
-  
+  // console.log('Creating post with data:', post); // Logs the post data being used for creation.
+
   const { data, error } = await supabase
     .from('posts')
     .insert([post])
@@ -121,9 +120,9 @@ export const createPost = async (post: Omit<Post, 'id' | 'created_at' | 'updated
         avatar_url
       )
     `);
-  
-  console.log('Create post response:', { data, error });
-  
+
+  // console.log('Create post response:', { data, error }); // Logs the response from the post creation operation.
+
   let createdPost = null;
   if (data && data.length > 0) {
     createdPost = {
@@ -136,7 +135,7 @@ export const createPost = async (post: Omit<Post, 'id' | 'created_at' | 'updated
       } : undefined
     } as Post;
   }
-  
+
   return { post: createdPost, error };
 };
 
@@ -159,13 +158,13 @@ export const deletePost = async (id: string) => {
 
 // Comments
 export const getComments = async (postId: string) => {
-  console.log('Fetching comments for post:', postId);
+  // console.log('Fetching comments for post:', postId); // Logs the post ID for which comments are being fetched.
   const { data, error } = await supabase
     .from('comments')
     .select('*, user:users(id, name, user_type, avatar_url)')
     .eq('post_id', postId)
     .order('created_at', { ascending: true });
-  
+
   // Transform data to match Comment type
   const comments = data?.map(item => ({
     ...item,
@@ -176,20 +175,20 @@ export const getComments = async (postId: string) => {
       avatar_url: item.user.avatar_url
     } : undefined
   })) as Comment[];
-  
-  console.log('Comments result:', { comments, error });
+
+  // console.log('Comments result:', { comments, error }); // Logs the result of fetching comments.
   return { comments, error };
 };
 
 export const createComment = async (comment: Omit<Comment, 'id' | 'created_at' | 'likes_count'>) => {
-  console.log('Creating comment with data:', comment);
+  // console.log('Creating comment with data:', comment); // Logs the comment data being used for creation.
   const { data, error } = await supabase
     .from('comments')
     .insert([comment])
     .select('*, user:users(id, name, user_type, avatar_url)');
-  
-  console.log('Create comment response:', { data, error });
-  
+
+  // console.log('Create comment response:', { data, error }); // Logs the response from the comment creation.
+
   let createdComment = null;
   if (data && data.length > 0) {
     createdComment = {
@@ -202,7 +201,7 @@ export const createComment = async (comment: Omit<Comment, 'id' | 'created_at' |
       } : undefined
     } as Comment;
   }
-  
+
   return { comment: createdComment, error };
 };
 
@@ -231,22 +230,22 @@ export const likePost = async (userId: string, postId: string) => {
     .select('id')
     .match({ user_id: userId, post_id: postId })
     .maybeSingle();
-    
+
   if (checkError) {
     return { data: null, error: checkError };
   }
-  
+
   // If like already exists, return early
   if (existingLike) {
     return { data: existingLike, error: null };
   }
-  
+
   // Otherwise create the new like
   const { data, error } = await supabase
     .from('likes')
     .insert([{ user_id: userId, post_id: postId }])
     .select();
-    
+
   return { data, error };
 };
 
@@ -266,25 +265,25 @@ export const likeComment = async (userId: string, commentId: string) => {
       .select('id')
       .match({ user_id: userId, comment_id: commentId })
       .maybeSingle();
-      
+
     if (checkError) {
       return { data: null, error: checkError };
     }
-    
+
     // If like already exists, return early without error
     if (existingLike) {
       return { data: existingLike, error: null };
     }
-    
+
     // Otherwise create the new like
     const { data, error } = await supabase
       .from('likes')
       .insert([{ user_id: userId, comment_id: commentId }])
       .select();
-      
+
     return { data, error };
   } catch (error) {
-    console.error('Error in likeComment function:', error);
+    // console.error('Error in likeComment function:', error); // Logs any error that occurs during the likeComment operation.
     return { data: null, error };
   }
 };
@@ -297,7 +296,7 @@ export const unlikeComment = async (userId: string, commentId: string) => {
       .match({ user_id: userId, comment_id: commentId });
     return { error };
   } catch (error) {
-    console.error('Error in unlikeComment function:', error);
+    // console.error('Error in unlikeComment function:', error); // Logs errors from the unlikeComment operation.
     return { error };
   }
 };
@@ -309,45 +308,45 @@ export const checkUserLiked = async (userId: string, postId?: string, commentId?
       .from('likes')
       .select('id')
       .eq('user_id', userId);
-      
+
     if (postId) {
       query.eq('post_id', postId);
     }
-    
+
     if (commentId) {
       query.eq('comment_id', commentId);
     }
-    
+
     const { data, error } = await query.maybeSingle();
-    
+
     if (error) throw error;
-    
+
     return { hasLiked: !!data, error: null };
   } catch (error) {
-    console.error('Error checking if user liked:', error);
+    // console.error('Error checking if user liked:', error); // Logs errors when checking if a user has liked a post/comment.
     return { hasLiked: false, error };
   }
 };
 
 // File uploads
 export const uploadImage = async (file: File, path: string) => {
-  console.log('Uploading image:', file.name, 'to path:', path);
-  
+  // console.log('Uploading image:', file.name, 'to path:', path); // Logs the filename and upload path.
+
   const { data, error } = await supabase.storage
     .from('forum-images')
     .upload(`${path}/${Date.now()}_${file.name}`, file);
-  
-  console.log('Upload response:', { data, error });
-  
+
+  // console.log('Upload response:', { data, error }); // Logs the server response after the upload.
+
   let imageUrl = null;
   if (data) {
     const { data: urlData } = supabase.storage
       .from('forum-images')
       .getPublicUrl(data.path);
     imageUrl = urlData.publicUrl;
-    console.log('Generated public URL:', imageUrl);
+    // console.log('Generated public URL:', imageUrl); // Logs the generated public URL of the uploaded image.
   }
-  
+
   return { url: imageUrl, error };
 };
 
@@ -363,7 +362,7 @@ export const getUserProfile = async (userId: string) => {
 
 export const updateUserProfile = async (userId: string, updates: Partial<User>) => {
   const updateData: any = {};
-  
+
   // Map User properties to the actual database column names
   if (updates.username) {
     updateData.name = updates.username;
@@ -374,7 +373,7 @@ export const updateUserProfile = async (userId: string, updates: Partial<User>) 
   if (updates.avatar_url !== undefined) {
     updateData.avatar_url = updates.avatar_url;
   }
-  
+
   const { data, error } = await supabase
     .from('users')
     .update(updateData)
@@ -384,29 +383,29 @@ export const updateUserProfile = async (userId: string, updates: Partial<User>) 
 };
 
 export const uploadAvatar = async (userId: string, file: File) => {
-  console.log('Uploading avatar for user:', userId);
-  
+  // console.log('Uploading avatar for user:', userId); // Logs the user ID for whom the avatar is being uploaded.
+
   // Upload to storage
   const { data, error: uploadError } = await supabase.storage
     .from('forum-images')
     .upload(`avatars/${userId}/${Date.now()}_${file.name}`, file);
-  
+
   if (uploadError || !data) {
-    console.error('Error uploading avatar:', uploadError);
+    // console.error('Error uploading avatar:', uploadError); // Logs any error during the avatar upload.
     return { url: null, error: uploadError };
   }
-  
+
   // Get public URL
   const { data: urlData } = supabase.storage
     .from('forum-images')
     .getPublicUrl(data.path);
-  
+
   const url = urlData.publicUrl;
-  console.log('Avatar uploaded successfully, URL:', url);
-  
+  // console.log('Avatar uploaded successfully, URL:', url); // Logs the URL of the successfully uploaded avatar.
+
   // Update user profile with avatar URL
   const { profile, error } = await updateUserProfile(userId, { avatar_url: url });
-  
+
   return { url, profile, error };
 };
 
