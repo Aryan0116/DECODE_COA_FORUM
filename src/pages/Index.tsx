@@ -76,7 +76,7 @@ export default function DecodeCOAForum() {
 
             <div className={`space-y-3 md:space-y-4 transition-all duration-700 ${fadeInClass}`}>
               <h1 className="text-2xl md:text-3xl lg:text-5xl xl:text-6xl font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
-                Welcome to DECODE CO-A
+                Welcome to DECODE CO-A FORUM
               </h1>
               <p className={`mx-auto max-w-[700px] text-sm md:text-base lg:text-xl px-4 md:px-0 transition-colors duration-300 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                 Your collaborative learning platform. Ask questions, share knowledge, and grow together.
